@@ -1,12 +1,125 @@
-﻿<Window x:Class="MainWindow"
+﻿<Window x:Class="CompareTwoFolders.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CompareTwoFolders"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
+        Width="800"
+        Height="450" 
+        Title="ConvertTwoFolders"
+        WindowState="Maximized"
+        FontFamily="Trebuchet MS"
+        FontSize="14"
+        FontWeight="Regular"
+        FlowDirection="LeftToRight">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> 
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>    
+            <RowDefinition Height="Auto"/> 
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0"
+               Content="۷۸۶" 
+               FontFamily="B Nazanin" 
+               Opacity="0.1"
+               FontSize="10"
+               HorizontalAlignment="Left"
+               FlowDirection="RightToLeft" />
+        <StackPanel Grid.Row="0">
+            <Label Content="ConvertTwoFolders"
+                   FontFamily="Times New Roman"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"/>
+            <Label Content="Version 1.0.0.0"
+                   HorizontalAlignment="Center"/>
+            <Label Content="Created by: Mohammad  Gol ara"
+                   HorizontalAlignment="Center"/>
+        </StackPanel>
+        <Grid Grid.Row="1" Margin="0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Button x:Name="ButtonOpenLeftFolder" Content="Open Left Folder" Grid.Row="0" Margin="0,10" Click="ButtonSelectLeftFolder_Click" />
+                <TextBox x:Name="TextBoxOpenLeftFolder" Text="Left Folder Path" IsReadOnly="True" IsReadOnlyCaretVisible="True" Grid.Row="1" BorderThickness="1" BorderBrush="Black" VerticalContentAlignment="Center" />
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Button x:Name="ButtonOpenRightFolder" Content="Open Right Folder" Grid.Row="0" Margin="0,10" Click="ButtonSelectRightFolder_Click" />
+                <TextBox x:Name="TextBoxOpenRightFolder" Text="Right Folder Path" IsReadOnly="True" IsReadOnlyCaretVisible="True" Grid.Row="1" BorderThickness="1" BorderBrush="Black" VerticalContentAlignment="Center" />
+            </Grid> 
+        </Grid>
+        <DataGrid Grid.Row="2"
+                  HeadersVisibility="Column" RowHeaderWidth="0" ColumnWidth="Auto" SelectionMode="Single" SelectionUnit="Cell"
+                  IsReadOnly="True" AutoGenerateColumns="False" IsTextSearchEnabled="False"
+                  GridLinesVisibility="All"
+                  CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="True" CanUserResizeColumns="True" CanUserSortColumns="False" 
+                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                  TextBlock.TextAlignment="Left" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+            <DataGrid.Resources>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="Foreground" Value="Black" />
+                    <Setter Property="BorderBrush" Value="Black" />
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="TextBlock.TextWrapping" Value="NoWrap" />
+                    <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Stretch" />
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Left Path" Width="8*" />
+                <DataGridTemplateColumn Header="Erase" Width="2*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Button x:Name="ButtonEraseLeft" Grid.Column="0" />
+                                <Button x:Name="ButtonEraseRight" Grid.Column="1" />
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Right Path" Width="8*" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <Grid Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+                <ProgressBar Name="ProgressBarMain"
+                             Grid.Column="0"
+                             Margin="0,15"
+                             Minimum="0"
+                             Maximum="100"
+                             Value="0" />
+                <TextBlock Text="0%" 
+                           Grid.Column="0"
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center"
+                           FontWeight="Bold"/>
+            <Button Grid.Column="1" Margin="25,10">
+                <Button.Content>
+                    <TextBlock Text="Start Search" Margin="20,5" />
+                </Button.Content>
+            </Button>
+        </Grid>
     </Grid>
 </Window>
