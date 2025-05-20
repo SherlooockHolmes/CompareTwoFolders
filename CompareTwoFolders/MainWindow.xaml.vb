@@ -83,5 +83,27 @@ Namespace CompareTwoFolders
                 If BtnL Or BtnR Then FinalFiles.RemoveAt(i)
             Next i
         End Sub
+        Private Sub DataGridFolders_PreviewMouseDoubleClick(sender As Object, e As MouseButtonEventArgs)
+            Dim depObj As DependencyObject = CType(e.OriginalSource, DependencyObject)
+
+            ' Traverse the visual tree upward until we find a DataGridCell
+            While depObj IsNot Nothing AndAlso TypeOf depObj IsNot DataGridCell
+                depObj = VisualTreeHelper.GetParent(depObj)
+            End While
+
+            If depObj IsNot Nothing Then
+                Dim cell As DataGridCell = CType(depObj, DataGridCell)
+
+                ' Check if the cell content is a TextBlock (i.e. a normal text cell)
+                If TypeOf cell.Content Is TextBlock Then
+                    Dim textBlock As TextBlock = CType(cell.Content, TextBlock)
+                    If File.Exists(textBlock.Text) Then
+                        Dim psi As New ProcessStartInfo(textBlock.Text)
+                        psi.UseShellExecute = True
+                        Process.Start(psi)
+                    End If
+                End If
+            End If
+        End Sub
     End Class
 End Namespace

@@ -33,7 +33,7 @@
                    FontSize="24"
                    FontWeight="Bold"
                    HorizontalAlignment="Center"/>
-            <Label Content="Version 1.0.0.0"
+            <Label Content="Version 1.5.0.0"
                    HorizontalAlignment="Center"/>
             <Label Content="Created by: Mohammad  Gol ara"
                    HorizontalAlignment="Center"/>
@@ -66,7 +66,8 @@
                   IsReadOnly="True" AutoGenerateColumns="False" IsTextSearchEnabled="False"
                   CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="True" CanUserResizeColumns="True" CanUserSortColumns="False" 
                   HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
-                  TextBlock.TextAlignment="Left" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                  TextBlock.TextAlignment="Left" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                  PreviewMouseDoubleClick="DataGridFolders_PreviewMouseDoubleClick">
             <DataGrid.Resources>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
                     <Setter Property="Foreground" Value="Black" />
