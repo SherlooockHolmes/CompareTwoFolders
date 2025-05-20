@@ -1,4 +1,6 @@
-﻿Namespace CompareTwoFolders
+﻿Imports System.IO
+Imports Microsoft.VisualBasic.FileIO
+Namespace CompareTwoFolders
     Public Class MainWindow
         Inherits Window
         Public Sub New()
@@ -26,7 +28,7 @@
         End Sub
         Private Sub SelectFolder(WhichPanel As Char)
             Dim windowHandle = New Interop.WindowInteropHelper(Me).Handle
-            Dim selectedPath As String = FolderPickerHelper.SelectFolder(windowHandle, "Please select a folder", allowNewFolderButton:=True)
+            Dim selectedPath As String = FolderPickerHelper.SelectFolder(windowHandle, "Please select a folder", allowNewFolderButton:=False)
             If Not String.IsNullOrEmpty(selectedPath) Then
                 Select Case WhichPanel
                     Case "L" : FolderPaths.LeftFolderPath = selectedPath
@@ -35,8 +37,6 @@
             End If
         End Sub
         Private Async Sub ButtonStartSearch_Click(sender As Object, e As RoutedEventArgs)
-            FolderPaths.LeftFolderPath = "D:\1"
-            FolderPaths.RightFolderPath = "D:\2"
             If String.IsNullOrWhiteSpace(FolderPaths.LeftFolderPath) Or String.IsNullOrWhiteSpace(FolderPaths.RightFolderPath) Then
                 MsgBox("Please set both left and right comparing folders.")
                 Exit Sub
@@ -68,7 +68,20 @@
             ButtonOpenRightFolder.IsEnabled = True
         End Sub
         Private Sub ButtonEraseDuplicates_Click(sender As Object, e As RoutedEventArgs)
-
+            If MessageBox.Show($"Are you sure to erase?{vbCrLf}Files will move to Recycle.Bin.", "Warning", MessageBoxButton.YesNo) = 7 Then Exit Sub
+            For i As Integer = FinalFiles.Count - 1 To 0 Step -1
+                Dim BtnL As Boolean = FinalFiles(i).ButtonEraseLeftData
+                Dim BtnR As Boolean = FinalFiles(i).ButtonEraseRightData
+                Dim DelL As String = FinalFiles(i).LeftData
+                Dim DelR As String = FinalFiles(i).RightData
+                If BtnL AndAlso File.Exists(DelL) Then FileSystem.DeleteFile(DelL,
+                                                                             UIOption.OnlyErrorDialogs,
+                                                                             RecycleOption.SendToRecycleBin)
+                If BtnR AndAlso File.Exists(DelR) Then FileSystem.DeleteFile(DelR,
+                                                                             UIOption.OnlyErrorDialogs,
+                                                                             RecycleOption.SendToRecycleBin)
+                If BtnL Or BtnR Then FinalFiles.RemoveAt(i)
+            Next i
         End Sub
     End Class
 End Namespace
