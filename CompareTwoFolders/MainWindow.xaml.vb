@@ -6,7 +6,6 @@ Namespace CompareTwoFolders
         Public Sub New()
             InitializeComponent()
             PrepareProgressBar()
-            DataGridFolders.ItemsSource = FinalFiles
         End Sub
         Private Sub PrepareProgressBar()
             Dim binding As New Binding With {
@@ -59,16 +58,23 @@ Namespace CompareTwoFolders
                 Case RadioButtonCompareByHashCode.IsChecked
                     CommpareBy = "CompareByHashCode"
             End Select
+            DataGridFolders.ItemsSource = Nothing
+            ButtonEraseDuplicates.IsEnabled = False
             RadioButtonCompareByFileName.IsEnabled = False
             RadioButtonCompareByHashCode.IsEnabled = False
             ButtonStartSearch.IsEnabled = False
             ButtonOpenLeftFolder.IsEnabled = False
             ButtonOpenRightFolder.IsEnabled = False
+            ProgressBarPercent.Percentage = 0
+            DoEvents()
             Dim TaskGetFileCollectionLEFT = Task.Run(Sub() FilesOfLeft = GetFileCollection(FolderPaths.LeftFolderPath))
             Dim TaskGetFileCollectionRIGHT = Task.Run(Sub() FilesOfRight = GetFileCollection(FolderPaths.RightFolderPath))
             Await TaskGetFileCollectionLEFT
             Await TaskGetFileCollectionRIGHT
-            StartCompareTwoFolders()
+            DoEvents()
+            Windows.Application.Current.Dispatcher.Invoke(Sub() StartCompareTwoFolders())
+            DoEvents()
+            DataGridFolders.ItemsSource = FinalFiles
             ProgressBarPercent.Percentage = 100
             ButtonEraseDuplicates.IsEnabled = FinalFiles.Count > 0
             RadioButtonCompareByFileName.IsEnabled = True

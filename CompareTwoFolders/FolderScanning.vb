@@ -9,6 +9,7 @@ Namespace CompareTwoFolders
                 For Each filePath In allFiles
                     FilesCollection.Add(New FilePropertiesClass With {.FullPathFile = filePath, .HashCode = If(CommpareBy = "CompareByHashCode", GetFileHash(filePath), New Byte(31) {})})
                     ProgressBarPercent.Percentage += 50 / allFiles.Length
+                    DoEvents()
                 Next filePath
                 Return FilesCollection
             Else
