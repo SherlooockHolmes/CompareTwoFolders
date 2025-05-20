@@ -8,6 +8,7 @@ Namespace CompareTwoFolders
                 Dim allFiles As String() = Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories)
                 For Each filePath In allFiles
                     FilesCollection.Add(New FilePropertiesClass With {.FullPathFile = filePath, .HashCode = GetFileHash(filePath)})
+                    ProgressBarPercent.Percentage += 50 / allFiles.Length
                 Next filePath
                 Return FilesCollection
             Else

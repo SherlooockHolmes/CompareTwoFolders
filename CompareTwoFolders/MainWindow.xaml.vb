@@ -3,7 +3,18 @@
         Inherits Window
         Public Sub New()
             InitializeComponent()
+            PrepareProgressBar()
             DataGridFolders.ItemsSource = FinalFiles
+        End Sub
+        Private Sub PrepareProgressBar()
+            Dim binding As New Binding With {
+                .Path = New PropertyPath(NameOf(ProgressBarPercent.Percentage)),
+                .Source = ProgressBarPercent,
+                .Mode = BindingMode.OneWay,
+                .UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                .StringFormat = "{0:F2}"
+            }
+            BindingOperations.SetBinding(TextBlockProgressBar, TextBlock.TextProperty, binding)
         End Sub
         Private Sub ButtonSelectLeftFolder_Click(sender As Object, e As RoutedEventArgs)
             SelectFolder("L")
@@ -23,7 +34,7 @@
                 End Select
             End If
         End Sub
-        Private Sub ButtonStartSearch_Click(sender As Object, e As RoutedEventArgs)
+        Private Async Sub ButtonStartSearch_Click(sender As Object, e As RoutedEventArgs)
             FolderPaths.LeftFolderPath = "D:\1"
             FolderPaths.RightFolderPath = "D:\2"
             If String.IsNullOrWhiteSpace(FolderPaths.LeftFolderPath) Or String.IsNullOrWhiteSpace(FolderPaths.RightFolderPath) Then
@@ -42,16 +53,19 @@
                 MsgBox("Folder does not have any file: " & FolderPaths.RightFolderPath)
                 Exit Sub
             End If
-
-            FilesOfLeft = GetFileCollection(FolderPaths.LeftFolderPath)
-            FilesOfRight = GetFileCollection(FolderPaths.RightFolderPath)
-
-            DoCompareTwoFolders()
-
-            ButtonEraseDuplicates.IsEnabled = True
-
-            DataGridFolders.ItemsSource = FinalFiles
-
+            ButtonStartSearch.IsEnabled = False
+            ButtonOpenLeftFolder.IsEnabled = False
+            ButtonOpenRightFolder.IsEnabled = False
+            Dim TaskGetFileCollectionLEFT = Task.Run(Sub() FilesOfLeft = GetFileCollection(FolderPaths.LeftFolderPath))
+            Dim TaskGetFileCollectionRIGHT = Task.Run(Sub() FilesOfRight = GetFileCollection(FolderPaths.RightFolderPath))
+            Await TaskGetFileCollectionLEFT
+            Await TaskGetFileCollectionRIGHT
+            StartCompareTwoFolders()
+            ProgressBarPercent.Percentage = 100
+            ButtonEraseDuplicates.IsEnabled = FinalFiles.Count > 0
+            ButtonStartSearch.IsEnabled = True
+            ButtonOpenLeftFolder.IsEnabled = True
+            ButtonOpenRightFolder.IsEnabled = True
         End Sub
         Private Sub ButtonEraseDuplicates_Click(sender As Object, e As RoutedEventArgs)
 
