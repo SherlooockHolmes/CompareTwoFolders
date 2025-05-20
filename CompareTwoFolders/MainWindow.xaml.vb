@@ -53,6 +53,14 @@ Namespace CompareTwoFolders
                 MsgBox("Folder does not have any file: " & FolderPaths.RightFolderPath)
                 Exit Sub
             End If
+            Select Case True'Sets CompareBy that indicates what protocol to compare.
+                Case RadioButtonCompareByFileName.IsChecked
+                    CommpareBy = "CompareByFileName"
+                Case RadioButtonCompareByHashCode.IsChecked
+                    CommpareBy = "CompareByHashCode"
+            End Select
+            RadioButtonCompareByFileName.IsEnabled = False
+            RadioButtonCompareByHashCode.IsEnabled = False
             ButtonStartSearch.IsEnabled = False
             ButtonOpenLeftFolder.IsEnabled = False
             ButtonOpenRightFolder.IsEnabled = False
@@ -63,6 +71,8 @@ Namespace CompareTwoFolders
             StartCompareTwoFolders()
             ProgressBarPercent.Percentage = 100
             ButtonEraseDuplicates.IsEnabled = FinalFiles.Count > 0
+            RadioButtonCompareByFileName.IsEnabled = True
+            RadioButtonCompareByHashCode.IsEnabled = True
             ButtonStartSearch.IsEnabled = True
             ButtonOpenLeftFolder.IsEnabled = True
             ButtonOpenRightFolder.IsEnabled = True

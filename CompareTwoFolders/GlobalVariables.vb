@@ -6,5 +6,6 @@ Namespace CompareTwoFolders
         Public Property FinalFiles As New ObservableCollection(Of ItemSourceOfDataGrid)
         Public Property FilesOfLeft As New ObservableCollection(Of FilePropertiesClass)
         Public Property FilesOfRight As New ObservableCollection(Of FilePropertiesClass)
+        Public Property CommpareBy As String
     End Module
 End Namespace

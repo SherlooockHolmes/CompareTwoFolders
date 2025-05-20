@@ -33,7 +33,7 @@
                    FontSize="24"
                    FontWeight="Bold"
                    HorizontalAlignment="Center"/>
-            <Label Content="Version 1.5.0.0"
+            <Label Content="Version 2.0.0.0"
                    HorizontalAlignment="Center"/>
             <Label Content="Created by: Mohammad  Gol ara"
                    HorizontalAlignment="Center"/>
@@ -153,25 +153,33 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-                <ProgressBar Name="ProgressBarMain"
-                             Grid.Column="0"
-                             Margin="0,15"
-                             Minimum="0"
-                             Maximum="100"
-                             Value="{Binding ElementName=TextBlockProgressBar, Path=Text, Mode=OneWay}" />
-                <TextBlock x:Name="TextBlockProgressBar"
+            <ProgressBar Name="ProgressBarMain"
+                            Grid.Column="0"
+                            Margin="0,15"
+                            Minimum="0"
+                            Maximum="100"
+                            Value="{Binding ElementName=TextBlockProgressBar, Path=Text, Mode=OneWay}" />
+            <TextBlock x:Name="TextBlockProgressBar"
                            Text="0%" 
                            Grid.Column="0"
                            HorizontalAlignment="Center" 
                            VerticalAlignment="Center"
                            FontWeight="Bold"/>
-            <Button x:Name="ButtonStartSearch" Grid.Column="1" Margin="25,10" Click="ButtonStartSearch_Click">
+            <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                <TextBlock Text="Compare Mode:" FontWeight="Bold" Margin="0,0,0,5" HorizontalAlignment="Center"/>
+                <StackPanel HorizontalAlignment="Center">
+                    <RadioButton x:Name="RadioButtonCompareByFileName" Content="FileName" GroupName="CompareMode" IsChecked="True" />
+                    <RadioButton x:Name="RadioButtonCompareByHashCode" Content="HashCode" GroupName="CompareMode" />
+                </StackPanel>
+            </StackPanel>
+            <Button x:Name="ButtonStartSearch" Grid.Column="2" Margin="25,10" Click="ButtonStartSearch_Click">
                 <Button.Content>
                     <TextBlock Text="Start Search" Margin="20,5" />
                 </Button.Content>
             </Button>
-            <Button x:Name="ButtonEraseDuplicates" Grid.Column="2" Margin="0,10,25,10" IsEnabled="False" Click="ButtonEraseDuplicates_Click">
+            <Button x:Name="ButtonEraseDuplicates" Grid.Column="3" Margin="0,10,25,10" IsEnabled="False" Click="ButtonEraseDuplicates_Click">
                 <Button.Content>
                     <TextBlock Text="Erase" Margin="20,5" />
                 </Button.Content>
