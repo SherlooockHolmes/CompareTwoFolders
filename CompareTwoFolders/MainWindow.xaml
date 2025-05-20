@@ -60,10 +60,10 @@
                 <TextBox x:Name="TextBoxOpenRightFolder" Text="Right Folder Path" IsReadOnly="True" IsReadOnlyCaretVisible="True" Grid.Row="1" BorderThickness="1" BorderBrush="Black" VerticalContentAlignment="Center" />
             </Grid> 
         </Grid>
-        <DataGrid Grid.Row="2"
+        <DataGrid x:Name="DataGridFolders"
+                  Grid.Row="2" GridLinesVisibility="All"
                   HeadersVisibility="Column" RowHeaderWidth="0" ColumnWidth="Auto" SelectionMode="Single" SelectionUnit="Cell"
                   IsReadOnly="True" AutoGenerateColumns="False" IsTextSearchEnabled="False"
-                  GridLinesVisibility="All"
                   CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="True" CanUserResizeColumns="True" CanUserSortColumns="False" 
                   HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                   TextBlock.TextAlignment="Left" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
@@ -79,10 +79,58 @@
                     <Setter Property="VerticalAlignment" Value="Stretch" />
                     <Setter Property="VerticalContentAlignment" Value="Center" />
                 </Style>
+                <Style TargetType="{x:Type DataGridCell}" x:Key="DataGridCellForColumnLeft">
+                    <Setter Property="Foreground" Value="Black" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=ButtonEraseLeftData, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Value="True">
+                            <Setter Property="Background" Value="LightPink" />
+                        </DataTrigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                        </Trigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ButtonEraseLeftData}" Value="True" />
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Background" Value="SlateBlue" />
+                            <Setter Property="Foreground" Value="White" />
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+                <Style TargetType="{x:Type DataGridCell}" x:Key="DataGridCellForColumnRight">
+                    <Setter Property="Foreground" Value="Black" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=ButtonEraseRightData, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Value="True">
+                            <Setter Property="Background" Value="LightPink" />
+                        </DataTrigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                        </Trigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ButtonEraseRightData}" Value="True" />
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Background" Value="SlateBlue" />
+                            <Setter Property="Foreground" Value="White" />
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+                <Style TargetType="{x:Type ToggleButton}" x:Key="ToggleButtonEraseLeftOrRight">
+                    <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                    <Setter Property="FontFamily" Value="Segoe UI" />
+                    <Setter Property="FontSize" Value="10" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Left Path" Width="8*" />
-                <DataGridTemplateColumn Header="Erase" Width="2*">
+                <DataGridTextColumn Header="Left Path" Width="45*" Binding="{Binding Path=LeftData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" CellStyle="{StaticResource DataGridCellForColumnLeft}" />
+                <DataGridTemplateColumn Header="Erase" Width="10*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
@@ -90,18 +138,19 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Button x:Name="ButtonEraseLeft" Grid.Column="0" />
-                                <Button x:Name="ButtonEraseRight" Grid.Column="1" />
+                                <ToggleButton x:Name="ToggleButtonEraseLeft" Content="Erase&#x0A;Left" Grid.Column="0" IsChecked="{Binding Path=ButtonEraseLeftData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ToggleButtonEraseLeftOrRight}" />
+                                <ToggleButton x:Name="ToggleButtonEraseRight" Content="Erase&#x0A;Right" Grid.Column="1" IsChecked="{Binding Path=ButtonEraseRightData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ToggleButtonEraseLeftOrRight}" />
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Right Path" Width="8*" />
+                <DataGridTextColumn Header="Right Path" Width="45*" Binding="{Binding Path=RightData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" CellStyle="{StaticResource DataGridCellForColumnRight}" />
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
                 <ProgressBar Name="ProgressBarMain"
@@ -115,9 +164,14 @@
                            HorizontalAlignment="Center" 
                            VerticalAlignment="Center"
                            FontWeight="Bold"/>
-            <Button Grid.Column="1" Margin="25,10">
+            <Button x:Name="ButtonStartSearch" Grid.Column="1" Margin="25,10" Click="ButtonStartSearch_Click">
                 <Button.Content>
                     <TextBlock Text="Start Search" Margin="20,5" />
+                </Button.Content>
+            </Button>
+            <Button x:Name="ButtonEraseDuplicates" Grid.Column="2" Margin="0,10,25,10" IsEnabled="False" Click="ButtonEraseDuplicates_Click">
+                <Button.Content>
+                    <TextBlock Text="Erase" Margin="20,5" />
                 </Button.Content>
             </Button>
         </Grid>
