@@ -33,7 +33,7 @@
                    FontSize="24"
                    FontWeight="Bold"
                    HorizontalAlignment="Center"/>
-            <Label Content="Version 2.5.0.0"
+            <Label Content="Version 3.0.0.0"
                    HorizontalAlignment="Center"/>
             <Label Content="Created by: Mohammad  Gol ara"
                    HorizontalAlignment="Center"/>
@@ -155,18 +155,63 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <ProgressBar Name="ProgressBarMain"
-                            Grid.Column="0"
-                            Margin="0,15"
-                            Minimum="0"
-                            Maximum="100"
-                            Value="{Binding ElementName=TextBlockProgressBar, Path=Text, Mode=OneWay}" />
-            <TextBlock x:Name="TextBlockProgressBar"
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ProgressBar Name="ProgressBarMain"
+                             Grid.Row="0"
+                             Grid.Column="0"
+                             Grid.ColumnSpan="2"
+                             Margin="0,5"
+                             Minimum="0"
+                             Maximum="100"
+                             Value="{Binding ElementName=TextBlockProgressBar, Path=Text, Mode=OneWay}" />
+                <TextBlock x:Name="TextBlockProgressBar"
                            Text="0%" 
+                           Grid.Row="0"
                            Grid.Column="0"
+                           Grid.ColumnSpan="2"
                            HorizontalAlignment="Center" 
                            VerticalAlignment="Center"
                            FontWeight="Bold"/>
+                <ToggleButton x:Name="ToggleButtonFilterExt" 
+                              Content=" Filter Ext "
+                              Grid.Row="1"
+                              Grid.Column="0"
+                              Margin="10,0" 
+                              Click="ToggleButtonFilterExt_Click" />
+                <TextBox x:Name="TextBoxFilterExt" 
+                         Grid.Row="1"
+                         Grid.Column="1" />
+                <TextBlock Text="Type ext here to filter. E.g.:  *.jpg; *.exe; *.txt" 
+                           FontStyle="Italic" 
+                           Foreground="Gray"
+                           Grid.Row="1"
+                           Grid.Column="1"
+                           Margin="5,0,0,0" 
+                           VerticalAlignment="Center"
+                           IsHitTestVisible="False">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Text, ElementName=TextBoxFilterExt}" Value="">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Text.Length, ElementName=TextBoxFilterExt}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>          
             <StackPanel Grid.Column="1" Margin="20,0,0,0">
                 <TextBlock Text="Compare Mode:" FontWeight="Bold" Margin="0,0,0,5" HorizontalAlignment="Center"/>
                 <StackPanel HorizontalAlignment="Center">

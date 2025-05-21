@@ -74,7 +74,7 @@ Namespace CompareTwoFolders
             DoEvents()
             Windows.Application.Current.Dispatcher.Invoke(Sub() StartCompareTwoFolders())
             DoEvents()
-            DataGridFolders.ItemsSource = FinalFiles
+            DataGridFolders.ItemsSource = FinalFilesView
             ProgressBarPercent.Percentage = 100
             ButtonEraseDuplicates.IsEnabled = FinalFiles.Count > 0
             RadioButtonCompareByFileName.IsEnabled = True
@@ -119,6 +119,26 @@ Namespace CompareTwoFolders
                         Process.Start(psi)
                     End If
                 End If
+            End If
+        End Sub
+        Private Sub ToggleButtonFilterExt_Click(sender As Object, e As RoutedEventArgs)
+            Dim blockedExtensions As List(Of String) =
+                TextBoxFilterExt.Text.Split(";"c).
+                Select(Function(ext)
+                           Dim trimmedExt = ext.Trim().ToLower().TrimStart("*"c).Trim()
+                           If Not trimmedExt.StartsWith(".") Then trimmedExt = "." & trimmedExt
+                           Return Path.GetExtension(trimmedExt)
+                       End Function).ToList()
+            If ToggleButtonFilterExt.IsChecked Then
+                FinalFilesView.Filter = Function(item)
+                                            Dim file = TryCast(item, ItemSourceOfDataGrid)
+                                            If file Is Nothing Then Return False
+                                            Dim leftBlocked = blockedExtensions.Any(Function(ext) Path.GetExtension(file.LeftData).ToLower() = ext)
+                                            Dim rightBlocked = blockedExtensions.Any(Function(ext) Path.GetExtension(file.RightData).ToLower() = ext)
+                                            Return Not (leftBlocked Or rightBlocked)
+                                        End Function
+            Else
+                FinalFilesView.Filter = Nothing
             End If
         End Sub
     End Class
