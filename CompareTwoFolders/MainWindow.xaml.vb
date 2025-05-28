@@ -35,7 +35,8 @@ Namespace CompareTwoFolders
                 End Select
             End If
         End Sub
-        Private Async Sub ButtonStartSearch_Click(sender As Object, e As RoutedEventArgs)
+        Private Async Sub ButtonStartStopSearch_Click(sender As Object, e As RoutedEventArgs)
+            If TextBlockStartStopSearch.Text = "Stop Search" Then IsCancelRequestedInFileSeeking = True : Exit Sub
             If String.IsNullOrWhiteSpace(FolderPaths.LeftFolderPath) Or String.IsNullOrWhiteSpace(FolderPaths.RightFolderPath) Then
                 MsgBox("Please set both left and right comparing folders.")
                 Exit Sub
@@ -62,7 +63,7 @@ Namespace CompareTwoFolders
             ButtonEraseDuplicates.IsEnabled = False
             RadioButtonCompareByFileName.IsEnabled = False
             RadioButtonCompareByHashCode.IsEnabled = False
-            ButtonStartSearch.IsEnabled = False
+            TextBlockStartStopSearch.Text = "Stop Search"
             ButtonOpenLeftFolder.IsEnabled = False
             ButtonOpenRightFolder.IsEnabled = False
             ProgressBarPercent.Percentage = 0
@@ -75,11 +76,12 @@ Namespace CompareTwoFolders
             Windows.Application.Current.Dispatcher.Invoke(Sub() StartCompareTwoFolders())
             DoEvents()
             DataGridFolders.ItemsSource = FinalFilesView
-            ProgressBarPercent.Percentage = 100
+            ProgressBarPercent.Percentage = If(Not IsCancelRequestedInFileSeeking, 100, 0)
+            IsCancelRequestedInFileSeeking = False
             ButtonEraseDuplicates.IsEnabled = FinalFiles.Count > 0
             RadioButtonCompareByFileName.IsEnabled = True
             RadioButtonCompareByHashCode.IsEnabled = True
-            ButtonStartSearch.IsEnabled = True
+            TextBlockStartStopSearch.Text = "Start Search"
             ButtonOpenLeftFolder.IsEnabled = True
             ButtonOpenRightFolder.IsEnabled = True
         End Sub

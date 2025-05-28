@@ -7,6 +7,7 @@ Namespace CompareTwoFolders
                 Dim FilesCollection As New ObservableCollection(Of FilePropertiesClass)
                 Dim allFiles As String() = Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories)
                 For Each filePath In allFiles
+                    If IsCancelRequestedInFileSeeking Then Exit For
                     FilesCollection.Add(New FilePropertiesClass With {.FullPathFile = filePath, .HashCode = If(CommpareBy = "CompareByHashCode", GetFileHash(filePath), New Byte(31) {})})
                     ProgressBarPercent.Percentage += 50 / allFiles.Length
                     DoEvents()
