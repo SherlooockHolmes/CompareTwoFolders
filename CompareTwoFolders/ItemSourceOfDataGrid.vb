@@ -30,6 +30,19 @@ Namespace CompareTwoFolders
             End Set
         End Property
 
+        Private _ButtonIgnoreThisData As Boolean = False
+        Public Property ButtonIgnoreThisData As Boolean
+            Get
+                Return _ButtonIgnoreThisData
+            End Get
+            Set(value As Boolean)
+                If _ButtonIgnoreThisData <> value Then
+                    _ButtonIgnoreThisData = value
+                    RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(ButtonIgnoreThisData)))
+                End If
+            End Set
+        End Property
+
         Private _ButtonEraseRightData As Boolean = False
         Public Property ButtonEraseRightData As Boolean
             Get

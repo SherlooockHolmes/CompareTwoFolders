@@ -143,5 +143,13 @@ Namespace CompareTwoFolders
                 FinalFilesView.Filter = Nothing
             End If
         End Sub
+
+        Private Sub ToggleButtonIgnoreThis_Checked(sender As Object, e As RoutedEventArgs)
+            FinalFilesView.Filter = Function(item)
+                                        Dim file = TryCast(item, ItemSourceOfDataGrid)
+                                        If file Is Nothing Then Return False
+                                        Return Not file.ButtonIgnoreThisData
+                                    End Function
+        End Sub
     End Class
 End Namespace

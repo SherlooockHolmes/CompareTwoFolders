@@ -33,7 +33,7 @@
                    FontSize="24"
                    FontWeight="Bold"
                    HorizontalAlignment="Center"/>
-            <Label Content="Version 3.5.0.0"
+            <Label Content="Version 4.0.0.0"
                    HorizontalAlignment="Center"/>
             <Label Content="Created by: Mohammad  Gol ara"
                    HorizontalAlignment="Center"/>
@@ -130,22 +130,29 @@
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Left Path" Width="45*" Binding="{Binding Path=LeftData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" CellStyle="{StaticResource DataGridCellForColumnLeft}" />
-                <DataGridTemplateColumn Header="Erase" Width="10*">
+                <DataGridTextColumn Header="Left Path" Width="43*" Binding="{Binding Path=LeftData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" CellStyle="{StaticResource DataGridCellForColumnLeft}" />
+                <DataGridTemplateColumn Header="Erase" Width="5*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <ToggleButton x:Name="ToggleButtonEraseLeft" Content="Erase&#x0A;Left" Grid.Column="0" IsChecked="{Binding Path=ButtonEraseLeftData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ToggleButtonEraseLeftOrRight}" />
-                                <ToggleButton x:Name="ToggleButtonEraseRight" Content="Erase&#x0A;Right" Grid.Column="1" IsChecked="{Binding Path=ButtonEraseRightData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ToggleButtonEraseLeftOrRight}" />
-                            </Grid>
+                            <ToggleButton x:Name="ToggleButtonEraseLeft" Content="Erase&#x0A;Left" Grid.Column="0" IsChecked="{Binding Path=ButtonEraseLeftData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ToggleButtonEraseLeftOrRight}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Right Path" Width="45*" Binding="{Binding Path=RightData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" CellStyle="{StaticResource DataGridCellForColumnRight}" />
+                <DataGridTemplateColumn Header="Ignore" Width="4*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ToggleButton x:Name="ToggleButtonIgnoreThis" Content="Ignore&#x0A;This" Grid.Column="0" IsChecked="{Binding Path=ButtonIgnoreThisData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="ToggleButtonIgnoreThis_Checked" Style="{StaticResource ToggleButtonEraseLeftOrRight}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Erase" Width="5*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ToggleButton x:Name="ToggleButtonEraseRight" Content="Erase&#x0A;Right" Grid.Column="0" IsChecked="{Binding Path=ButtonEraseRightData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ToggleButtonEraseLeftOrRight}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Right Path" Width="43*" Binding="{Binding Path=RightData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" CellStyle="{StaticResource DataGridCellForColumnRight}" />
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
