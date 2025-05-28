@@ -8,14 +8,22 @@ Namespace CompareTwoFolders
             PrepareProgressBar()
         End Sub
         Private Sub PrepareProgressBar()
-            Dim binding As New Binding With {
-                .Path = New PropertyPath(NameOf(ProgressBarPercent.Percentage)),
+            Dim bindingProgressBarPercent As New Binding With {
+            .Path = New PropertyPath(NameOf(ProgressBarPercent.Percentage)),
+            .Source = ProgressBarPercent,
+            .Mode = BindingMode.OneWay,
+            .UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+            .StringFormat = "{0:F2}"
+            }
+            BindingOperations.SetBinding(TextBlockProgressBar, TextBlock.TextProperty, bindingProgressBarPercent)
+            Dim bindingSimilarItemsFound As New Binding With {
+                .Path = New PropertyPath(NameOf(ProgressBarPercent.SimilarItemsFound)),
                 .Source = ProgressBarPercent,
                 .Mode = BindingMode.OneWay,
                 .UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-                .StringFormat = "{0:F2}"
+                .StringFormat = "{0:F0}"
             }
-            BindingOperations.SetBinding(TextBlockProgressBar, TextBlock.TextProperty, binding)
+            BindingOperations.SetBinding(LabelSimilarItemsFound, Label.ContentProperty, bindingSimilarItemsFound)
         End Sub
         Private Sub ButtonSelectLeftFolder_Click(sender As Object, e As RoutedEventArgs)
             SelectFolder("L")
@@ -36,7 +44,11 @@ Namespace CompareTwoFolders
             End If
         End Sub
         Private Async Sub ButtonStartStopSearch_Click(sender As Object, e As RoutedEventArgs)
-            If TextBlockStartStopSearch.Text = "Stop Search" Then IsCancelRequestedInFileSeeking = True : Exit Sub
+            If TextBlockStartStopSearch.Text = "Stop Search" Then
+                IsCancelRequestedInFileSeeking = True
+                CancelSearching.Cancel()
+                Exit Sub
+            End If
             If String.IsNullOrWhiteSpace(FolderPaths.LeftFolderPath) Or String.IsNullOrWhiteSpace(FolderPaths.RightFolderPath) Then
                 MsgBox("Please set both left and right comparing folders.")
                 Exit Sub
@@ -68,22 +80,30 @@ Namespace CompareTwoFolders
             ButtonOpenRightFolder.IsEnabled = False
             ProgressBarPercent.Percentage = 0
             DoEvents()
-            Dim TaskGetFileCollectionLEFT = Task.Run(Sub() FilesOfLeft = GetFileCollection(FolderPaths.LeftFolderPath))
-            Dim TaskGetFileCollectionRIGHT = Task.Run(Sub() FilesOfRight = GetFileCollection(FolderPaths.RightFolderPath))
+            Dim TaskGetFileCollectionLEFT = Task.Run(Sub() FilesOfLeft = GetFileCollection(FolderPaths.LeftFolderPath), CancelSearching.Token)
+            Dim TaskGetFileCollectionRIGHT = Task.Run(Sub() FilesOfRight = GetFileCollection(FolderPaths.RightFolderPath), CancelSearching.Token)
             Await TaskGetFileCollectionLEFT
             Await TaskGetFileCollectionRIGHT
+            CancelSearching.Dispose()
+            TaskGetFileCollectionLEFT.Dispose()
+            TaskGetFileCollectionRIGHT.Dispose()
             DoEvents()
             Windows.Application.Current.Dispatcher.Invoke(Sub() StartCompareTwoFolders())
             DoEvents()
             DataGridFolders.ItemsSource = FinalFilesView
             ProgressBarPercent.Percentage = If(Not IsCancelRequestedInFileSeeking, 100, 0)
+            UpdateLabelSimilarItemsFound()
             IsCancelRequestedInFileSeeking = False
+            CancelSearching = New Threading.CancellationTokenSource
             ButtonEraseDuplicates.IsEnabled = FinalFiles.Count > 0
             RadioButtonCompareByFileName.IsEnabled = True
             RadioButtonCompareByHashCode.IsEnabled = True
             TextBlockStartStopSearch.Text = "Start Search"
             ButtonOpenLeftFolder.IsEnabled = True
             ButtonOpenRightFolder.IsEnabled = True
+        End Sub
+        Private Sub UpdateLabelSimilarItemsFound()
+            ProgressBarPercent.SimilarItemsFound = FinalFilesView.Cast(Of ItemSourceOfDataGrid).Count
         End Sub
         Private Sub ButtonEraseDuplicates_Click(sender As Object, e As RoutedEventArgs)
             If MessageBox.Show($"Are you sure to erase?{vbCrLf}Files will move to Recycle.Bin.", "Warning", MessageBoxButton.YesNo) = 7 Then Exit Sub
@@ -100,6 +120,7 @@ Namespace CompareTwoFolders
                                                                              RecycleOption.SendToRecycleBin)
                 If BtnL Or BtnR Then FinalFiles.RemoveAt(i)
             Next i
+            UpdateLabelSimilarItemsFound()
         End Sub
         Private Sub DataGridFolders_PreviewMouseDoubleClick(sender As Object, e As MouseButtonEventArgs)
             Dim depObj As DependencyObject = CType(e.OriginalSource, DependencyObject)
@@ -142,14 +163,15 @@ Namespace CompareTwoFolders
             Else
                 FinalFilesView.Filter = Nothing
             End If
+            UpdateLabelSimilarItemsFound()
         End Sub
-
         Private Sub ToggleButtonIgnoreThis_Checked(sender As Object, e As RoutedEventArgs)
             FinalFilesView.Filter = Function(item)
                                         Dim file = TryCast(item, ItemSourceOfDataGrid)
                                         If file Is Nothing Then Return False
                                         Return Not file.ButtonIgnoreThisData
                                     End Function
+            UpdateLabelSimilarItemsFound()
         End Sub
     End Class
 End Namespace

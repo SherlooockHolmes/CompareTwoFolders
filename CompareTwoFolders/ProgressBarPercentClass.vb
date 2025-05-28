@@ -16,5 +16,18 @@ Namespace CompareTwoFolders
                 End If
             End Set
         End Property
+
+        Private _SimilarItemsFound As Double = 0
+        Public Property SimilarItemsFound As Double
+            Get
+                Return _SimilarItemsFound
+            End Get
+            Set(value As Double)
+                If _SimilarItemsFound <> value Then
+                    _SimilarItemsFound = value
+                    RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(SimilarItemsFound)))
+                End If
+            End Set
+        End Property
     End Class
 End Namespace

@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CompareTwoFolders"
         mc:Ignorable="d"
-        Width="800"
-        Height="450" 
+        Width="1200"
+        Height="500" 
         Title="CompareTwoFolders"
         WindowState="Maximized"
         FontFamily="Trebuchet MS"
@@ -33,7 +33,7 @@
                    FontSize="24"
                    FontWeight="Bold"
                    HorizontalAlignment="Center"/>
-            <Label Content="Version 4.0.0.0"
+            <Label Content="Version 4.5.0.0"
                    HorizontalAlignment="Center"/>
             <Label Content="Created by: Mohammad  Gol ara"
                    HorizontalAlignment="Center"/>
@@ -170,11 +170,12 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <ProgressBar Name="ProgressBarMain"
                              Grid.Row="0"
                              Grid.Column="0"
-                             Grid.ColumnSpan="2"
+                             Grid.ColumnSpan="3"
                              Margin="0,5"
                              Minimum="0"
                              Maximum="100"
@@ -183,10 +184,14 @@
                            Text="0%" 
                            Grid.Row="0"
                            Grid.Column="0"
-                           Grid.ColumnSpan="2"
+                           Grid.ColumnSpan="3"
                            HorizontalAlignment="Center" 
                            VerticalAlignment="Center"
                            FontWeight="Bold"/>
+                <StackPanel Orientation="Horizontal" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Label Content="Similar items found = " />
+                    <Label Name="LabelSimilarItemsFound" Content="0" />
+                </StackPanel>
                 <ToggleButton x:Name="ToggleButtonFilterExt" 
                               Content=" Filter Ext "
                               Grid.Row="1"
@@ -195,7 +200,8 @@
                               Click="ToggleButtonFilterExt_Click" />
                 <TextBox x:Name="TextBoxFilterExt" 
                          Grid.Row="1"
-                         Grid.Column="1" />
+                         Grid.Column="1"
+                         Grid.ColumnSpan="2" />
                 <TextBlock Text="Type ext here to filter. E.g.:  *.jpg; *.exe; *.txt" 
                            FontStyle="Italic" 
                            Foreground="Gray"

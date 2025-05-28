@@ -3,7 +3,6 @@ Imports System.ComponentModel
 
 Namespace CompareTwoFolders
     Public Module GlobalVariables
-        Public Property IsCancelRequestedInFileSeeking As Boolean = False
         Public Property ProgressBarPercent As New ProgressBarPercentClass
         Public Property FolderPaths As New TheFolderPaths
         Public Property FilesOfLeft As New ObservableCollection(Of FilePropertiesClass)
@@ -11,5 +10,7 @@ Namespace CompareTwoFolders
         Public Property FinalFiles As New ObservableCollection(Of ItemSourceOfDataGrid)
         Public Property FinalFilesView As ICollectionView = CollectionViewSource.GetDefaultView(FinalFiles)
         Public Property CommpareBy As String
+        Public Property CancelSearching As New Threading.CancellationTokenSource
+        Public Property IsCancelRequestedInFileSeeking As Boolean = False
     End Module
 End Namespace
