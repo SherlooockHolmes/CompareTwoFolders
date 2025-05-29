@@ -23,7 +23,7 @@ Namespace CompareTwoFolders
                 Return _HashCode
             End Get
             Set(value As Byte())
-                If Not _HashCode.SequenceEqual(value) Then
+                If Not _HashCode?.SequenceEqual(value) Then
                     _HashCode = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(HashCode)))
                 End If

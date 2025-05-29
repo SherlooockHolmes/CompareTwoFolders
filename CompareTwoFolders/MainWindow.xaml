@@ -33,15 +33,16 @@
                    FontSize="24"
                    FontWeight="Bold"
                    HorizontalAlignment="Center"/>
-            <Label Content="Version 4.5.0.0"
+            <Label Content="Version 5.0.0.0"
                    HorizontalAlignment="Center"/>
             <Label Content="Created by: Mohammad  Gol ara"
                    HorizontalAlignment="Center"/>
         </StackPanel>
         <Grid Grid.Row="1" Margin="0,10">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{Binding ElementName=DataGridFolders, Path=Columns[0].ActualWidth, UpdateSourceTrigger=PropertyChanged}" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="{Binding ElementName=DataGridFolders, Path=Columns[4].ActualWidth, UpdateSourceTrigger=PropertyChanged}" />
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
@@ -51,7 +52,7 @@
                 <Button x:Name="ButtonOpenLeftFolder" Content="Open Left Folder" Grid.Row="0" Margin="0,10" Click="ButtonSelectLeftFolder_Click" />
                 <TextBox x:Name="TextBoxOpenLeftFolder" Text="Left Folder Path" IsReadOnly="True" IsReadOnlyCaretVisible="True" Grid.Row="1" BorderThickness="1" BorderBrush="Black" VerticalContentAlignment="Center" />
             </Grid>
-            <Grid Grid.Column="1">
+            <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />

@@ -9,11 +9,11 @@ Namespace CompareTwoFolders
         End Sub
         Private Sub PrepareProgressBar()
             Dim bindingProgressBarPercent As New Binding With {
-            .Path = New PropertyPath(NameOf(ProgressBarPercent.Percentage)),
-            .Source = ProgressBarPercent,
-            .Mode = BindingMode.OneWay,
-            .UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-            .StringFormat = "{0:F2}"
+                .Path = New PropertyPath(NameOf(ProgressBarPercent.Percentage)),
+                .Source = ProgressBarPercent,
+                .Mode = BindingMode.OneWay,
+                .UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                .StringFormat = "{0:F2}"
             }
             BindingOperations.SetBinding(TextBlockProgressBar, TextBlock.TextProperty, bindingProgressBarPercent)
             Dim bindingSimilarItemsFound As New Binding With {
@@ -80,13 +80,15 @@ Namespace CompareTwoFolders
             ButtonOpenRightFolder.IsEnabled = False
             ProgressBarPercent.Percentage = 0
             DoEvents()
-            Dim TaskGetFileCollectionLEFT = Task.Run(Sub() FilesOfLeft = GetFileCollection(FolderPaths.LeftFolderPath), CancelSearching.Token)
-            Dim TaskGetFileCollectionRIGHT = Task.Run(Sub() FilesOfRight = GetFileCollection(FolderPaths.RightFolderPath), CancelSearching.Token)
-            Await TaskGetFileCollectionLEFT
-            Await TaskGetFileCollectionRIGHT
-            CancelSearching.Dispose()
-            TaskGetFileCollectionLEFT.Dispose()
-            TaskGetFileCollectionRIGHT.Dispose()
+            Try
+                Using CancelSearching 'Ensures it gets disposed automatically.
+                    Await Task.WhenAll(
+                        Task.Run(Sub() FilesOfLeft = GetFileCollection(FolderPaths.LeftFolderPath), CancelSearching.Token),
+                        Task.Run(Sub() FilesOfRight = GetFileCollection(FolderPaths.RightFolderPath), CancelSearching.Token))
+                End Using
+            Catch ex As Exception When TypeOf ex Is OperationCanceledException OrElse True
+                MsgBox($"Process canceled.")
+            End Try
             DoEvents()
             Windows.Application.Current.Dispatcher.Invoke(Sub() StartCompareTwoFolders())
             DoEvents()
