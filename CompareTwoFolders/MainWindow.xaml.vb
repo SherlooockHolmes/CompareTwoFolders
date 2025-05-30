@@ -26,16 +26,47 @@ Namespace CompareTwoFolders
             BindingOperations.SetBinding(LabelSimilarItemsFound, Label.ContentProperty, bindingSimilarItemsFound)
         End Sub
         Private Sub ButtonSelectLeftFolder_Click(sender As Object, e As RoutedEventArgs)
+            Dim OldFolderPath As String = FolderPaths.LeftFolderPath
             SelectFolder("L")
+            If IsLeftFolderSameAsBeforeButProcessed AndAlso OldFolderPath = FolderPaths.LeftFolderPath Then
+                Select Case MsgBox($"This is the same folder as before.{vbCrLf}Re-analyzing it takes time again.{vbCrLf}Do you want that I re-analyze it again?", MsgBoxStyle.YesNoCancel + MsgBoxStyle.Question, "Question")
+                    Case MsgBoxResult.Yes
+                        IsLeftFolderSameAsBeforeButProcessed = False
+                    Case MsgBoxResult.No
+                        IsLeftFolderSameAsBeforeButProcessed = True
+                    Case Else
+                        Exit Sub
+                End Select
+            Else
+                IsLeftFolderSameAsBeforeButProcessed = False
+            End If
             TextBoxOpenLeftFolder.Text = FolderPaths.LeftFolderPath
         End Sub
         Private Sub ButtonSelectRightFolder_Click(sender As Object, e As RoutedEventArgs)
+            Dim OldFolderPath As String = FolderPaths.LeftFolderPath
             SelectFolder("R")
+            If IsRightFolderSameAsBeforeButProcessed AndAlso OldFolderPath = FolderPaths.RightFolderPath Then
+                Select Case MsgBox($"This is the same folder as before.{vbCrLf}Re-analyzing it takes time again.{vbCrLf}Do you want that I re-analyze it again?", MsgBoxStyle.YesNoCancel + MsgBoxStyle.Question, "Question")
+                    Case MsgBoxResult.Yes
+                        IsRightFolderSameAsBeforeButProcessed = False
+                    Case MsgBoxResult.No
+                        IsRightFolderSameAsBeforeButProcessed = True
+                    Case Else
+                        Exit Sub
+                End Select
+            Else
+                IsLeftFolderSameAsBeforeButProcessed = False
+            End If
             TextBoxOpenRightFolder.Text = FolderPaths.RightFolderPath
         End Sub
         Private Sub SelectFolder(WhichPanel As Char)
+            Dim initFolder As String = String.Empty
+            Select Case WhichPanel
+                Case "L" : initFolder = FolderPaths.LeftFolderPath
+                Case "R" : initFolder = FolderPaths.RightFolderPath
+            End Select
             Dim windowHandle = New Interop.WindowInteropHelper(Me).Handle
-            Dim selectedPath As String = FolderPickerHelper.SelectFolder(windowHandle, "Please select a folder", allowNewFolderButton:=False)
+            Dim selectedPath As String = FolderPickerHelper.SelectFolder(windowHandle, "Please select a folder", allowNewFolderButton:=False, initialFolder:=initFolder)
             If Not String.IsNullOrEmpty(selectedPath) Then
                 Select Case WhichPanel
                     Case "L" : FolderPaths.LeftFolderPath = selectedPath
@@ -83,9 +114,11 @@ Namespace CompareTwoFolders
             Try
                 Using CancelSearching 'Ensures it gets disposed automatically.
                     Await Task.WhenAll(
-                        Task.Run(Sub() FilesOfLeft = GetFileCollection(FolderPaths.LeftFolderPath), CancelSearching.Token),
-                        Task.Run(Sub() FilesOfRight = GetFileCollection(FolderPaths.RightFolderPath), CancelSearching.Token))
+                        Task.Run(Sub() If Not IsLeftFolderSameAsBeforeButProcessed Then FilesOfLeft = GetFileCollection(FolderPaths.LeftFolderPath), CancelSearching.Token),
+                        Task.Run(Sub() If Not IsRightFolderSameAsBeforeButProcessed Then FilesOfRight = GetFileCollection(FolderPaths.RightFolderPath), CancelSearching.Token))
                 End Using
+                IsLeftFolderSameAsBeforeButProcessed = True
+                IsRightFolderSameAsBeforeButProcessed = True
             Catch ex As Exception When TypeOf ex Is OperationCanceledException OrElse True
                 MsgBox($"Process canceled.")
             End Try

@@ -15,9 +15,7 @@ Namespace CompareTwoFolders
             Dim FilesCollection As New ObservableCollection(Of FilePropertiesClass)
 
             ' Synchronous entry, run async code and wait
-            FilesCollectionConcurrent = Task.Run(Async Function()
-                                                     Return Await GetFileCollectionAsync(folderPath)
-                                                 End Function).Result
+            FilesCollectionConcurrent = Task.Run(Async Function() Await GetFileCollectionAsync(folderPath)).Result
 
             'Import to ObservableCollection
             For Each item In FilesCollectionConcurrent
@@ -64,12 +62,8 @@ Namespace CompareTwoFolders
 
                 ProgressBarPercent.Percentage += 50 / allFilesCount
 
-            Catch ex As OperationCanceledException
-                ' Clean cancel
-                Return
-            Catch ex As Exception
-                ' Optional: handle/log file-level error
-                Return
+            Catch ex As Exception When TypeOf ex Is OperationCanceledException OrElse True
+                MsgBox($"Process canceled.")
             Finally
                 semaphore.Release()
             End Try
