@@ -33,7 +33,7 @@
                    FontSize="24"
                    FontWeight="Bold"
                    HorizontalAlignment="Center"/>
-            <Label Content="Version 5.5.0.0"
+            <Label Content="Version 6.0.0.0"
                    HorizontalAlignment="Center"/>
             <Label Content="Created by: Mohammad  Gol ara"
                    HorizontalAlignment="Center"/>
@@ -132,12 +132,18 @@
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Left Path" Width="43*" Binding="{Binding Path=LeftData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" CellStyle="{StaticResource DataGridCellForColumnLeft}" />
-                <DataGridTemplateColumn Header="Erase" Width="5*">
+                <DataGridTemplateColumn Width="5*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ToggleButton x:Name="ToggleButtonEraseLeft" Content="Erase&#x0A;Left" Grid.Column="0" IsChecked="{Binding Path=ButtonEraseLeftData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ToggleButtonEraseLeftOrRight}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.Header>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <CheckBox x:Name="CheckBoxHeaderEraseLeft" VerticalAlignment="Center" Click="CheckBoxHeaderErase_Click" />
+                            <TextBlock Text="Erase" Margin="5,0,0,0" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </DataGridTemplateColumn.Header>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Ignore" Width="4*">
                     <DataGridTemplateColumn.CellTemplate>
@@ -146,12 +152,18 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Erase" Width="5*">
+                <DataGridTemplateColumn Width="5*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ToggleButton x:Name="ToggleButtonEraseRight" Content="Erase&#x0A;Right" Grid.Column="0" IsChecked="{Binding Path=ButtonEraseRightData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ToggleButtonEraseLeftOrRight}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.Header>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <CheckBox x:Name="CheckBoxHeaderEraseRight" VerticalAlignment="Center" Click="CheckBoxHeaderErase_Click" />
+                            <TextBlock Text="Erase" Margin="5,0,0,0" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </DataGridTemplateColumn.Header>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Right Path" Width="43*" Binding="{Binding Path=RightData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" CellStyle="{StaticResource DataGridCellForColumnRight}" />
             </DataGrid.Columns>
@@ -189,16 +201,15 @@
                            HorizontalAlignment="Center" 
                            VerticalAlignment="Center"
                            FontWeight="Bold"/>
-                <StackPanel Orientation="Horizontal" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Label Content="Similar items found = " />
                     <Label Name="LabelSimilarItemsFound" Content="0" />
                 </StackPanel>
-                <ToggleButton x:Name="ToggleButtonFilterExt" 
-                              Content=" Filter Ext "
-                              Grid.Row="1"
-                              Grid.Column="0"
-                              Margin="10,0" 
-                              Click="ToggleButtonFilterExt_Click" />
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ToggleButton x:Name="ToggleButtonFilterEqualNames" Content=" Filter Equal Names " FontSize="10" FontWeight="Bold" Margin="10,0" Click="ToggleButtonFilterEqualNames_Click" />
+                    <ToggleButton x:Name="ToggleButtonFilterUnEqualNames" Content=" Filter Unequal Names " FontSize="10" FontWeight="Bold" Margin="0" Click="ToggleButtonFilterUnEqualNames_Click" />
+                    <ToggleButton x:Name="ToggleButtonFilterExt" Content=" Filter Ext " FontSize="10" FontWeight="Bold" Margin="10,0" Height="{Binding ElementName=TextBoxFilterExt, Path=ActualHeight, UpdateSourceTrigger=PropertyChanged}" Click="ToggleButtonFilterExt_Click" />
+                </StackPanel>
                 <TextBox x:Name="TextBoxFilterExt" 
                          Grid.Row="1"
                          Grid.Column="1"

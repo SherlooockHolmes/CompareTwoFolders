@@ -179,34 +179,68 @@ Namespace CompareTwoFolders
                 End If
             End If
         End Sub
-        Private Sub ToggleButtonFilterExt_Click(sender As Object, e As RoutedEventArgs)
-            Dim blockedExtensions As List(Of String) =
-                TextBoxFilterExt.Text.Split(";"c).
-                Select(Function(ext)
-                           Dim trimmedExt = ext.Trim().ToLower().TrimStart("*"c).Trim()
-                           If Not trimmedExt.StartsWith(".") Then trimmedExt = "." & trimmedExt
-                           Return Path.GetExtension(trimmedExt)
-                       End Function).ToList()
-            If ToggleButtonFilterExt.IsChecked Then
-                FinalFilesView.Filter = Function(item)
-                                            Dim file = TryCast(item, ItemSourceOfDataGrid)
-                                            If file Is Nothing Then Return False
-                                            Dim leftBlocked = blockedExtensions.Any(Function(ext) Path.GetExtension(file.LeftData).ToLower() = ext)
-                                            Dim rightBlocked = blockedExtensions.Any(Function(ext) Path.GetExtension(file.RightData).ToLower() = ext)
-                                            Return Not (leftBlocked Or rightBlocked)
-                                        End Function
-            Else
-                FinalFilesView.Filter = Nothing
-            End If
-            UpdateLabelSimilarItemsFound()
-        End Sub
-        Private Sub ToggleButtonIgnoreThis_Checked(sender As Object, e As RoutedEventArgs)
+        Private Sub DoFilterCollection()
             FinalFilesView.Filter = Function(item)
                                         Dim file = TryCast(item, ItemSourceOfDataGrid)
                                         If file Is Nothing Then Return False
-                                        Return Not file.ButtonIgnoreThisData
+
+                                        Dim ReturnResult As Boolean = True
+
+                                        ' Rule 1: Ignore items marked with .ButtonIgnoreThisData = True
+                                        ReturnResult = Not file.ButtonIgnoreThisData
+
+                                        ' Rule 2: Filter blocked extensions
+                                        Dim blockedExtensions As List(Of String) = TextBoxFilterExt.Text.Split(";"c).
+                                            Select(Function(ext)
+                                                       Dim trimmedExt = ext.Trim().ToLower().TrimStart("*"c).Trim()
+                                                       If Not trimmedExt.StartsWith(".") Then trimmedExt = "." & trimmedExt
+                                                       Return Path.GetExtension(trimmedExt)
+                                                   End Function).ToList()
+                                        If ToggleButtonFilterExt.IsChecked Then
+                                            Dim leftBlocked = blockedExtensions.Any(Function(ext) Path.GetExtension(file.LeftData).ToLower() = ext)
+                                            Dim rightBlocked = blockedExtensions.Any(Function(ext) Path.GetExtension(file.RightData).ToLower() = ext)
+                                            ReturnResult = Not (leftBlocked Or rightBlocked)
+                                        End If
+
+                                        Dim ResultOfEqual As Boolean = String.Equals(Path.GetFileName(file.LeftData), Path.GetFileName(file.RightData), StringComparison.OrdinalIgnoreCase)
+
+                                        ' Rule 3: Filter by equal names
+                                        If ToggleButtonFilterEqualNames.IsChecked AndAlso Not ResultOfEqual Then ReturnResult = False
+
+                                        ' Rule 4: Filter by unequal names
+                                        If ToggleButtonFilterUnEqualNames.IsChecked AndAlso ResultOfEqual Then ReturnResult = False
+
+                                        ' Filtering
+                                        Return ReturnResult
                                     End Function
             UpdateLabelSimilarItemsFound()
+        End Sub
+        Private Sub ToggleButtonFilterExt_Click(sender As Object, e As RoutedEventArgs)
+            DoFilterCollection()
+        End Sub
+        Private Sub ToggleButtonFilterEqualNames_Click(sender As Object, e As RoutedEventArgs)
+            DoFilterCollection()
+        End Sub
+        Private Sub ToggleButtonFilterUnEqualNames_Click(sender As Object, e As RoutedEventArgs)
+            DoFilterCollection()
+        End Sub
+        Private Sub ToggleButtonIgnoreThis_Checked(sender As Object, e As RoutedEventArgs)
+            DoFilterCollection()
+        End Sub
+        Private Sub CheckBoxHeaderErase_Click(sender As Object, e As RoutedEventArgs)
+            Dim checkBox = TryCast(sender, CheckBox)
+            Dim checkBoxName As String = checkBox.Name
+            Dim LR As Char = Char.MinValue
+            Select Case True
+                Case checkBoxName.Contains("Left")
+                    LR = "L"
+                Case checkBoxName.Contains("Right")
+                    LR = "R"
+            End Select
+            For Each item In FinalFiles
+                If LR = "L" Then item.ButtonEraseLeftData = sender.IsChecked
+                If LR = "R" Then item.ButtonEraseRightData = sender.IsChecked
+            Next item
         End Sub
     End Class
 End Namespace
